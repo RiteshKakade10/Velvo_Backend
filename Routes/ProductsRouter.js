@@ -1,9 +1,19 @@
 import express from 'express';
+import ensureToken from '../Middlewares/Auth.js';
 
 const router=express.Router();
 
-router.post("/products",(req,res)=>{
-    res.send("All products are here");
+router.get("/",ensureToken,(req,res)=>{
+    console.log(req.user);
+    res.status(200).json([
+        {
+            name:"Mobile",
+            quantity:120
+        },
+        {
+            name:"Laptop",
+            quantity:100
+        }
+    ])
 });
-
 export default router;

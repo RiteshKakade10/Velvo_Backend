@@ -5,7 +5,8 @@ export const signupValidation = (req, res, next) => {
   const schema = Joi.object({
     name: Joi.string().min(3).max(100).required(),
     email: Joi.string().email().required(),
-    password: Joi.string().min(3).max(12).required()
+    // Allow 6-30 characters for stronger security
+    password: Joi.string().min(6).max(30).required()
   });
 
   const { error } = schema.validate(req.body);
@@ -20,7 +21,8 @@ export const signupValidation = (req, res, next) => {
 export const loginValidation = (req, res, next) => {
   const schema = Joi.object({
     email: Joi.string().email().required(),
-    password: Joi.string().min(3).max(10).required(),
+    // Match the same rules as signup
+    password: Joi.string().min(6).max(30).required(),
   });
 
   const { error } = schema.validate(req.body);
