@@ -14,6 +14,7 @@ export const Signup = async (req, res) => {
         success: false
       });
     }
+    
 
     // Hash password
     const hashPassword = await bcrypt.hash(password, 10);
@@ -39,13 +40,13 @@ export const Signup = async (req, res) => {
 
 export const Login = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { email, password } = req.body;
 
     // Check if user already exists
     const user=await userModel.findOne({email});
     if(!user){
       return res.status(403).json({
-        message:"Login failed!!!Email is Wrong",
+        message:"Account Not Found",
         success:false,
       })
     }
@@ -64,8 +65,8 @@ export const Login = async (req, res) => {
     const jwtToken=jwt.sign(
       {email:user.email,_id:user.id},
       process.env.JWT_SECRET,
-      {expiresIn:'24h'}
-    )  
+      {expiresIn:'24h'},
+    );
 
     // Respond success
     res.status(201).json({
