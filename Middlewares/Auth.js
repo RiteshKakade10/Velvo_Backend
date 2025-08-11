@@ -1,26 +1,24 @@
-import jwt, { decode } from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 
-const ensureToken=(req,res,next)=>{
-    const auth=req.headers['authorization'];
+const ensureToken = (req, res, next) => {
+  const authHeader = req.headers['authorization'];
 
-    if(!auth){
-        return res.status(403).json(
-            {
-                message:"Unauthorized Token!!"
-            }
-        );
-    }
+  if (!authHeader) {
+    return res.status(403).json({ message: "Unauthorized Token!!" });
+  }
 
-    try{
-        const decoded=jwt.verify(auth,process.env.JWT_SECRET);
-        req.user=decoded;
-        next();
-    }catch(error){
-        res.status(403).json({
-            message:"Internal Server Error!"
-        })
+  // Extract token from "Bearer <token>"
+  const token = authHeader.startsWith("Bearer ")
+    ? authHeader.split(" ")[1]
+    : authHeader;
 
-    }
-}
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded;
+    next();
+  } catch (error) {
+    res.status(403).json({ message: "Invalid or expired token!" });
+  }
+};
 
- export default ensureToken;
+export default ensureToken;
